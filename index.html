@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Booking app..</title>
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"],
+        input[type="number"],
+        select,
+        input[type="date"],
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            height: 40px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form>
+        <input id="unique-id" type="text" placeholder="enter your unique id"/>
+        <input id="name" type="text" placeholder="enter your name"/>
+        <input id="age" type="number" placeholder="enter your age"/>
+        <select id="from-station">
+            <option value="">From</option>
+            <option value="Banglore">Banglore</option>
+            <option value="Pune">Pune</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+        </select>
+        <select id="to-station">
+            <option value="">To</option>
+            <option value="Banglore">Banglore</option>
+            <option value="Pune">Pune</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+        </select>
+        <label for= "journey-date">Journey Date</label>
+        <input id="journey-date" type="date" />
+        <select id="seat-type">
+            <option value="">Seat Type</option>
+            <option value="AC First Class">First Class</option>
+            <option value="Sleeper Class">Sleeper</option>
+            <option value="Second Class">Second Class</option>
+            <option value="General">General</option>
+        </select>
+        <button id="register">Register</button>
+    </form>
+    <a href="./dashboard.html">Go to Dashboard</a>
+</body>
+<script>
+    document.getElementById("register").addEventListener("click", handleUserRegistration);
+    let userDetails = JSON.parse(localStorage.getItem("user-details"))||[];
+
+    function handleUserRegistration() {
+       
+        let singleUser = {
+        uniqueId : document.getElementById('unique-id').value+Math.random()*1000,
+        name : document.getElementById("name").value,
+        age : document.getElementById("age").value,
+        fromStation : document.getElementById("from-station").value,
+        toStation : document.getElementById("to-station").value,
+        journeyDate : document.getElementById("journey-date").value,
+        seatType : document.getElementById("seat-type").value
+    }
+    if(singleUser.uniqueId==="" || singleUser.name==="" || singleUser.age==="" || singleUser.fromStation==="" || singleUser.toStation==="" || singleUser.journeyDate==="" || singleUser.seatType==="") 
+    {
+        alert ('All inputs are required')
+    }
+    else if(singleUser.age<18 || singleUser.age>40 || singleUser.fromStation===singleUser.toStation) 
+    {
+        alert ("either age is not between 18 and 40 or from station and to station are same")
+    }
+    else 
+    {
+        console.log(userDetails)
+        console.log(singleUser)
+        userDetails.push(singleUser);
+        localStorage.setItem("user-details", JSON.stringify(userDetails))
+    }
+
+}
+</script>
+</html>

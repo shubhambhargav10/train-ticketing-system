@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"],
+        input[type="number"],
+        select,
+        input[type="date"],
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            height: 40px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <select id="seat" onchange = "handleSeat()">
+        <option value="">Select by Class</option>
+        <option value="AC First Class">AC First Class</option>
+        <option value="Sleeper Class">Sleeper Class</option>
+        <option value="Second Class">Second Class</option>
+        <option value="General">General</option>
+    </select>
+
+    <select id="age" onchange = "handleAge()">
+        <option value="">Sort by Age</option>
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+
+    <select id="date" onchange = "handleDate()">
+        <option value="">Sort by Date</option>
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+
+    <table>
+        <thead>
+          <tr>
+            <th>S.No.</th>
+            <th>Unique Id</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Station From</th>
+            <th>Station To</th>
+            <th>Jounery Date</th>
+            <th>Seat Type</th>
+            <th>OTP</th>
+            <th>Confirm</th>
+            <th>Reject</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+      <a href="./booking.html">Check Booked Tickets</a>
+</body>
+<script >
+    let usersArray = JSON.parse(localStorage.getItem('user-details')) || [];
+
+displayUsers(usersArray);
+
+
+function displayUsers(arr) {
+    document.querySelector('tbody').innerHTML=''
+
+    arr.map((ele, index)=> {
+    let tr = document.createElement('tr');
+
+    let td1 = document.createElement('td');
+    td1.textContent = index+1;
+
+    let td11 = document.createElement('td');
+    td11.textContent = Math.floor(ele.uniqueId);
+
+    let td2 = document.createElement('td');
+    td2.textContent = ele.name;
+
+    let td3 = document.createElement('td');
+    td3.textContent = ele.age;
+
+    let td4 = document.createElement('td');
+    td4.textContent = ele.fromStation;
+
+    let td5 = document.createElement('td');
+    td5.textContent = ele.toStation;
+
+    let td6 = document.createElement('td');
+    td6.textContent = ele.journeyDate;
+
+    let td7 = document.createElement('td');
+    td7.textContent = ele.seatType
+
+    let td8 = document.createElement('td');
+    td8.textContent = Math.floor(Math.random() * 10000);
+    ele.otp=td8.textContent
+
+    let td9 = document.createElement('td');
+    td9.textContent = "Confirm";
+    td9.addEventListener('click', function () {
+        handleConfirmation(ele,index);
+    })
+
+    let td10 = document.createElement('td');
+    td10.textContent = "Reject";
+    td10.addEventListener('click', function () {
+        handleRejection(index)
+    })
+
+    tr.append(td1,td11,td2,td3,td4,td5,td6,td7,td8,td9,td10);
+    document.querySelector("tbody").append(tr);
+})
+}
+function handleRejection (indx) {
+    let arr = usersArray.splice(indx,1);
+    localStorage.setItem('user-details',JSON.stringify(usersArray));
+    displayUsers(usersArray)
+}
+
+function handleConfirmation (ele,index) {
+    let otp = prompt("Please enter your OTP");
+    if(otp===ele.otp) 
+    {
+        alert(`${ele.name} added to waiting list`);
+
+        setTimeout(() => {
+            alert(`Booking ticket from ${ele.fromStation} to ${ele.toStation}`);
+        }, 5000);
+
+        setTimeout(() => {
+            alert (`Ticket booked for ${ele.journeyDate}`)
+        }, 10000);
+
+        let bookedTicket = usersArray.splice(index,1);
+        displayUsers(usersArray);
+        localStorage.setItem('booked', JSON.stringify(bookedTicket));
+    }
+    else 
+    {
+        alert ('invalid otp');
+    }
+}
+
+function handleSeat () {
+    let filteredArr=[];
+    let seat = document.getElementById('seat').value;
+    if(seat==="") {
+        displayUsers(usersArray);
+    }
+    else {
+            let filteredArr = usersArray.filter((ele)=>{
+            return ele.seatType === seat;
+        })
+        console.log(filteredArr)
+        displayUsers(filteredArr);
+    }
+    
+}
+
+function handleAge () {
+    let age = document.getElementById('age').value;
+    usersArray.sort(function(a,b){
+        if(age==='asc') {
+            return a.age-b.age;
+        }
+        if(age==='desc') {
+            return b.age-a.age
+        }
+        return 0;
+    })
+    displayUsers(usersArray)
+}
+
+function handleDate () {
+    let age = document.getElementById('age').value;
+    usersArray.sort(function(a,b){
+        if(age==='asc') {
+            if(a.journeyDate>b.journeyDate) {
+                return 1;
+            }
+        }
+        if(age==='desc') {
+            if(a.journeyDate<b.journeyDate) {
+                return -1;
+            }
+        }
+        return 0;
+    })
+    displayUsers(usersArray)
+}
+
+    
+</script>
+</html>
